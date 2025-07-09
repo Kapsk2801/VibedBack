@@ -1,5 +1,3 @@
-'use client'
-
 import { Star, Shield, Users, TrendingUp, Heart, Target, Eye, Award } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'

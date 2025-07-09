@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { Star, MapPin, GraduationCap, ExternalLink, Users, TrendingUp, Award, Building } from 'lucide-react'

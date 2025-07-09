@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import { Search, Filter, MapPin, GraduationCap, Star } from 'lucide-react'
 import { SearchBar } from '@/components/SearchBar'
