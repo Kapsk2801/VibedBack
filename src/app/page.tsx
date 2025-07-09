@@ -1,103 +1,321 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Search, Star, Users, Shield, TrendingUp, GraduationCap, MapPin } from 'lucide-react'
+import { SearchBar } from '@/components/SearchBar'
+import { CollegeCard } from '@/components/CollegeCard'
+import { ReviewForm } from '@/components/ReviewForm'
+import { Button } from '@/components/ui/Button'
+import { Card, CardContent } from '@/components/ui/Card'
+
+// Mock data - replace with Supabase data
+const mockColleges = [
+  {
+    id: '1',
+    name: 'Indian Institute of Technology Delhi',
+    city: 'New Delhi',
+    state: 'Delhi',
+    stream: 'Engineering',
+    website: 'https://iitd.ac.in',
+    avg_rating: 4.5,
+    total_reviews: 234
+  },
+  {
+    id: '2',
+    name: 'Indian Institute of Management Ahmedabad',
+    city: 'Ahmedabad',
+    state: 'Gujarat',
+    stream: 'Management',
+    website: 'https://iima.ac.in',
+    avg_rating: 4.7,
+    total_reviews: 189
+  },
+  {
+    id: '3',
+    name: 'All India Institute of Medical Sciences',
+    city: 'New Delhi',
+    state: 'Delhi',
+    stream: 'Medical',
+    website: 'https://aiims.edu',
+    avg_rating: 4.3,
+    total_reviews: 156
+  },
+  {
+    id: '4',
+    name: 'National Institute of Technology Trichy',
+    city: 'Tiruchirappalli',
+    state: 'Tamil Nadu',
+    stream: 'Engineering',
+    website: 'https://nitt.edu',
+    avg_rating: 4.2,
+    total_reviews: 298
+  },
+  {
+    id: '5',
+    name: 'Delhi University',
+    city: 'New Delhi',
+    state: 'Delhi',
+    stream: 'Arts & Science',
+    website: 'https://du.ac.in',
+    avg_rating: 3.9,
+    total_reviews: 445
+  },
+  {
+    id: '6',
+    name: 'Jawaharlal Nehru University',
+    city: 'New Delhi',
+    state: 'Delhi',
+    stream: 'Arts & Science',
+    website: 'https://jnu.ac.in',
+    avg_rating: 4.1,
+    total_reviews: 167
+  }
+]
+
+interface College {
+  id: string
+  name: string
+  city: string
+  state: string
+  stream: string
+  website: string | null
+  avg_rating: number
+  total_reviews: number
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [colleges, setColleges] = useState<College[]>(mockColleges)
+  const [filteredColleges, setFilteredColleges] = useState<College[]>(mockColleges)
+  const [selectedCollege, setSelectedCollege] = useState<College | null>(null)
+  const [showReviewForm, setShowReviewForm] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleCollegeSelect = (college: College) => {
+    setSelectedCollege(college)
+    // In a real app, this would navigate to college detail page
+    console.log('Selected college:', college)
+  }
+
+  const handleReviewSubmit = async (reviewData: any) => {
+    // In a real app, this would submit to Supabase
+    console.log('Review submitted:', reviewData)
+    alert('Review submitted successfully!')
+    setShowReviewForm(false)
+  }
+
+  const stats = [
+    { icon: GraduationCap, label: 'Colleges Listed', value: '2,500+' },
+    { icon: Users, label: 'Student Reviews', value: '15,000+' },
+    { icon: Shield, label: 'Verified Reviews', value: '8,500+' },
+    { icon: TrendingUp, label: 'Monthly Visitors', value: '50,000+' }
+  ]
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Star className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="text-xl font-bold text-gray-900">VibedBack</h1>
+            </div>
+            <nav className="hidden md:flex items-center gap-6">
+              <a href="#" className="text-gray-600 hover:text-gray-900">Browse Colleges</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">About</a>
+              <Button size="sm">Submit Review</Button>
+            </nav>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Honest College Reviews
+            <span className="block text-blue-200">You Can Trust</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-blue-100 mb-12 max-w-3xl mx-auto">
+            Discover transparent, anonymous, and verified reviews of Indian colleges. 
+            Make informed decisions about your future.
+          </p>
+          
+          <div className="max-w-4xl mx-auto mb-12">
+            <SearchBar 
+              colleges={colleges} 
+              onCollegeSelect={handleCollegeSelect}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <stat.icon className="w-8 h-8 mx-auto mb-2 text-blue-200" />
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-blue-200 text-sm">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Why Choose VibedBack?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We're building India's most trusted platform for college reviews with transparency at its core.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="text-center p-8">
+              <CardContent>
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Shield className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4">Anonymous & Safe</h3>
+                <p className="text-gray-600">
+                  Share honest feedback without revealing your identity. Your privacy is our priority.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-8">
+              <CardContent>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Users className="w-8 h-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4">Verified Reviews</h3>
+                <p className="text-gray-600">
+                  College email verification ensures authentic reviews from real students.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-8">
+              <CardContent>
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <TrendingUp className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4">Real-time Insights</h3>
+                <p className="text-gray-600">
+                  Get up-to-date information about faculty, infrastructure, and placements.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Colleges */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Colleges</h2>
+              <p className="text-gray-600">Discover what students are saying about top institutions</p>
+            </div>
+            <Button variant="outline">View All Colleges</Button>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredColleges.slice(0, 6).map((college) => (
+              <CollegeCard
+                key={college.id}
+                college={college}
+                onViewDetails={handleCollegeSelect}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-blue-600 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Help Future Students Make Better Choices
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Share your college experience and help others make informed decisions about their education.
+          </p>
+          <Button
+            size="lg"
+            variant="secondary"
+            onClick={() => setShowReviewForm(true)}
+            className="bg-white text-blue-600 hover:bg-gray-100"
+          >
+            Submit Your Review
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Star className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-xl font-bold">VibedBack</h3>
+              </div>
+              <p className="text-gray-400">
+                India's most trusted platform for honest college reviews and transparent feedback.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Platform</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">Browse Colleges</a></li>
+                <li><a href="#" className="hover:text-white">Submit Review</a></li>
+                <li><a href="#" className="hover:text-white">Search</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">About Us</a></li>
+                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">Help Center</a></li>
+                <li><a href="#" className="hover:text-white">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white">Report Issue</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 VibedBack. All rights reserved. Built for transparency in education.</p>
+          </div>
+        </div>
       </footer>
+
+      {/* Review Form Modal */}
+      {showReviewForm && (
+        <ReviewForm
+          collegeId="1"
+          collegeName="Sample College"
+          onSubmit={handleReviewSubmit}
+          onClose={() => setShowReviewForm(false)}
+        />
+      )}
     </div>
-  );
+  )
 }
