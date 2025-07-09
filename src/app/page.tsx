@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import { Search, Star, Users, Shield, TrendingUp, GraduationCap, MapPin } from 'lucide-react'
 import { SearchBar } from '@/components/SearchBar'
