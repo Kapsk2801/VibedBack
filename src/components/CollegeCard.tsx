@@ -64,7 +64,7 @@ export function CollegeCard({ college, onViewDetails }: CollegeCardProps) {
         </div>
 
         <Button
-          onClick={() => onViewDetails(college)}
+          onClick={() => window.location.href = `/college/${college.id}`}
           variant="outline"
           className="w-full"
         >

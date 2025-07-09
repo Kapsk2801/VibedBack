@@ -123,8 +123,8 @@ export default function Home() {
               <h1 className="text-xl font-bold text-gray-900">VibedBack</h1>
             </div>
             <nav className="hidden md:flex items-center gap-6">
-              <a href="#" className="text-gray-600 hover:text-gray-900">Browse Colleges</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">About</a>
+              <a href="/browse" className="text-gray-600 hover:text-gray-900">Browse Colleges</a>
+              <a href="/about" className="text-gray-600 hover:text-gray-900">About</a>
               <Button size="sm">Submit Review</Button>
             </nav>
           </div>
@@ -223,6 +223,9 @@ export default function Home() {
               <p className="text-gray-600">Discover what students are saying about top institutions</p>
             </div>
             <Button variant="outline">View All Colleges</Button>
+            <a href="/browse">
+              <Button variant="outline">View All Colleges</Button>
+            </a>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -276,7 +279,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Platform</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Browse Colleges</a></li>
+                <li><a href="/browse" className="hover:text-white">Browse Colleges</a></li>
                 <li><a href="#" className="hover:text-white">Submit Review</a></li>
                 <li><a href="#" className="hover:text-white">Search</a></li>
               </ul>
@@ -285,7 +288,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">About Us</a></li>
+                <li><a href="/about" className="hover:text-white">About Us</a></li>
                 <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-white">Terms of Service</a></li>
               </ul>
