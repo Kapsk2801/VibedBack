@@ -1,10 +1,11 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import { Search, Filter, MapPin, GraduationCap, Star } from 'lucide-react'
 import { SearchBar } from '@/components/SearchBar'
 import { CollegeCard } from '@/components/CollegeCard'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
 
 // Mock data - replace with Supabase data
 const mockColleges = [
@@ -67,6 +68,26 @@ const mockColleges = [
     website: 'https://jnu.ac.in',
     avg_rating: 4.1,
     total_reviews: 167
+  },
+  {
+    id: '7',
+    name: 'Indian Institute of Science Bangalore',
+    city: 'Bangalore',
+    state: 'Karnataka',
+    stream: 'Engineering',
+    website: 'https://iisc.ac.in',
+    avg_rating: 4.8,
+    total_reviews: 145
+  },
+  {
+    id: '8',
+    name: 'Indian Institute of Management Bangalore',
+    city: 'Bangalore',
+    state: 'Karnataka',
+    stream: 'Management',
+    website: 'https://iimb.ac.in',
+    avg_rating: 4.6,
+    total_reviews: 203
   }
 ]
 
@@ -160,8 +181,8 @@ export default function BrowsePage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Filter className="w-5 h-5" />
-                  <h2 className="font-semibold">Filters</h2>
+                  <Filter className="w-5 h-5 text-blue-600" />
+                  <h2 className="font-semibold text-gray-900">Filters</h2>
                 </div>
 
                 <div className="space-y-6">
@@ -173,7 +194,7 @@ export default function BrowsePage() {
                     <select
                       value={selectedStream}
                       onChange={(e) => setSelectedStream(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                     >
                       {streams.map(stream => (
                         <option key={stream} value={stream}>{stream}</option>
@@ -189,7 +210,7 @@ export default function BrowsePage() {
                     <select
                       value={selectedState}
                       onChange={(e) => setSelectedState(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                     >
                       {states.map(state => (
                         <option key={state} value={state}>{state}</option>
@@ -205,13 +226,26 @@ export default function BrowsePage() {
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                     >
                       <option value="rating">Highest Rated</option>
                       <option value="reviews">Most Reviews</option>
                       <option value="name">Name (A-Z)</option>
                     </select>
                   </div>
+
+                  {/* Clear Filters */}
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setSelectedStream('All')
+                      setSelectedState('All')
+                      setSortBy('rating')
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -249,11 +283,72 @@ export default function BrowsePage() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No colleges found</h3>
                 <p className="text-gray-600">Try adjusting your filters or search terms</p>
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => {
+                    setSelectedStream('All')
+                    setSelectedState('All')
+                    setSortBy('rating')
+                  }}
+                >
+                  Reset Filters
+                </Button>
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Star className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-xl font-bold">VibedBack</h3>
+              </div>
+              <p className="text-gray-400">
+                India's most trusted platform for honest college reviews and transparent feedback.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Platform</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="/browse" className="hover:text-white">Browse Colleges</a></li>
+                <li><a href="#" className="hover:text-white">Submit Review</a></li>
+                <li><a href="#" className="hover:text-white">Search</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="/about" className="hover:text-white">About Us</a></li>
+                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">Help Center</a></li>
+                <li><a href="#" className="hover:text-white">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white">Report Issue</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 VibedBack. All rights reserved. Built for transparency in education.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
