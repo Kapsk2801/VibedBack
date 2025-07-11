@@ -6,121 +6,42 @@ import { SearchBar } from '@/components/SearchBar'
 import { CollegeCard } from '@/components/CollegeCard'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
+import { colleges, getAllStates, getAllStreams, type College } from '@/data/colleges'
 
-// Mock data - replace with Supabase data
-const mockColleges = [
-  {
-    id: '1',
-    name: 'Indian Institute of Technology Delhi',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Engineering',
-    website: 'https://iitd.ac.in',
-    avg_rating: 4.5,
-    total_reviews: 234
-  },
-  {
-    id: '2',
-    name: 'Indian Institute of Management Ahmedabad',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    stream: 'Management',
-    website: 'https://iima.ac.in',
-    avg_rating: 4.7,
-    total_reviews: 189
-  },
-  {
-    id: '3',
-    name: 'All India Institute of Medical Sciences',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Medical',
-    website: 'https://aiims.edu',
-    avg_rating: 4.3,
-    total_reviews: 156
-  },
-  {
-    id: '4',
-    name: 'National Institute of Technology Trichy',
-    city: 'Tiruchirappalli',
-    state: 'Tamil Nadu',
-    stream: 'Engineering',
-    website: 'https://nitt.edu',
-    avg_rating: 4.2,
-    total_reviews: 298
-  },
-  {
-    id: '5',
-    name: 'Delhi University',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Arts & Science',
-    website: 'https://du.ac.in',
-    avg_rating: 3.9,
-    total_reviews: 445
-  },
-  {
-    id: '6',
-    name: 'Jawaharlal Nehru University',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Arts & Science',
-    website: 'https://jnu.ac.in',
-    avg_rating: 4.1,
-    total_reviews: 167
-  },
-  {
-    id: '7',
-    name: 'Indian Institute of Science Bangalore',
-    city: 'Bangalore',
-    state: 'Karnataka',
-    stream: 'Engineering',
-    website: 'https://iisc.ac.in',
-    avg_rating: 4.8,
-    total_reviews: 145
-  },
-  {
-    id: '8',
-    name: 'Indian Institute of Management Bangalore',
-    city: 'Bangalore',
-    state: 'Karnataka',
-    stream: 'Management',
-    website: 'https://iimb.ac.in',
-    avg_rating: 4.6,
-    total_reviews: 203
-  }
-]
-
-const streams = ['All', 'Engineering', 'Medical', 'Management', 'Arts & Science', 'Law', 'Pharmacy']
-const states = ['All', 'Delhi', 'Maharashtra', 'Karnataka', 'Tamil Nadu', 'Gujarat', 'West Bengal']
-
-interface College {
-  id: string
-  name: string
-  city: string
-  state: string
-  stream: string
-  website: string | null
-  avg_rating: number
-  total_reviews: number
-}
+// Convert college data format for compatibility
+const convertCollegeFormat = (college: College) => ({
+  id: college.id,
+  name: college.name,
+  city: college.city,
+  state: college.state,
+  stream: college.streams[0], // Use first stream for compatibility
+  website: college.website,
+  avg_rating: college.avg_rating,
+  total_reviews: college.total_reviews
+})
 
 export default function BrowsePage() {
-  const [colleges, setColleges] = useState<College[]>(mockColleges)
-  const [filteredColleges, setFilteredColleges] = useState<College[]>(mockColleges)
+  const [allColleges] = useState(colleges.map(convertCollegeFormat))
+  const [filteredColleges, setFilteredColleges] = useState(colleges.map(convertCollegeFormat))
   const [selectedStream, setSelectedStream] = useState('All')
   const [selectedState, setSelectedState] = useState('All')
   const [sortBy, setSortBy] = useState('rating')
+
+  const streams = getAllStreams()
+  const states = getAllStates()
 
   const handleCollegeSelect = (college: College) => {
     window.location.href = `/college/${college.id}`
   }
 
   useEffect(() => {
-    let filtered = colleges
+    let filtered = allColleges
 
     if (selectedStream !== 'All') {
-      filtered = filtered.filter(college => college.stream === selectedStream)
+      filtered = filtered.filter(college => {
+        const originalCollege = colleges.find(c => c.id === college.id)
+        return originalCollege?.streams.includes(selectedStream)
+      })
     }
 
     if (selectedState !== 'All') {
@@ -140,7 +61,7 @@ export default function BrowsePage() {
     })
 
     setFilteredColleges(filtered)
-  }, [colleges, selectedStream, selectedState, sortBy])
+  }, [allColleges, selectedStream, selectedState, sortBy])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -172,7 +93,7 @@ export default function BrowsePage() {
 
         {/* Search Bar */}
         <div className="mb-8">
-          <SearchBar colleges={colleges} onCollegeSelect={handleCollegeSelect} />
+          <SearchBar colleges={allColleges} onCollegeSelect={handleCollegeSelect} />
         </div>
 
         <div className="grid lg:grid-cols-4 gap-8">
@@ -269,7 +190,7 @@ export default function BrowsePage() {
             <div className="grid md:grid-cols-2 gap-6">
               {filteredColleges.map((college) => (
                 <CollegeCard
-                  key={college.id}
+                  key={college.id} 
                   college={college}
                   onViewDetails={handleCollegeSelect}
                 />

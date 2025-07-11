@@ -12,7 +12,9 @@ interface College {
   city: string
   state: string
   stream: string
+  website?: string | null
   avg_rating: number
+  total_reviews?: number
 }
 
 interface SearchBarProps {

@@ -7,90 +7,28 @@ import { CollegeCard } from '@/components/CollegeCard'
 import { ReviewForm } from '@/components/ReviewForm'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
+import { colleges, type College } from '@/data/colleges'
 
-// Mock data - replace with Supabase data
-const mockColleges = [
-  {
-    id: '1',
-    name: 'Indian Institute of Technology Delhi',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Engineering',
-    website: 'https://iitd.ac.in',
-    avg_rating: 4.5,
-    total_reviews: 234
-  },
-  {
-    id: '2',
-    name: 'Indian Institute of Management Ahmedabad',
-    city: 'Ahmedabad',
-    state: 'Gujarat',
-    stream: 'Management',
-    website: 'https://iima.ac.in',
-    avg_rating: 4.7,
-    total_reviews: 189
-  },
-  {
-    id: '3',
-    name: 'All India Institute of Medical Sciences',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Medical',
-    website: 'https://aiims.edu',
-    avg_rating: 4.3,
-    total_reviews: 156
-  },
-  {
-    id: '4',
-    name: 'National Institute of Technology Trichy',
-    city: 'Tiruchirappalli',
-    state: 'Tamil Nadu',
-    stream: 'Engineering',
-    website: 'https://nitt.edu',
-    avg_rating: 4.2,
-    total_reviews: 298
-  },
-  {
-    id: '5',
-    name: 'Delhi University',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Arts & Science',
-    website: 'https://du.ac.in',
-    avg_rating: 3.9,
-    total_reviews: 445
-  },
-  {
-    id: '6',
-    name: 'Jawaharlal Nehru University',
-    city: 'New Delhi',
-    state: 'Delhi',
-    stream: 'Arts & Science',
-    website: 'https://jnu.ac.in',
-    avg_rating: 4.1,
-    total_reviews: 167
-  }
-]
-
-interface College {
-  id: string
-  name: string
-  city: string
-  state: string
-  stream: string
-  website: string | null
-  avg_rating: number
-  total_reviews: number
-}
+// Convert college data format for compatibility
+const convertCollegeFormat = (college: College) => ({
+  id: college.id,
+  name: college.name,
+  city: college.city,
+  state: college.state,
+  stream: college.streams[0], // Use first stream for compatibility
+  website: college.website,
+  avg_rating: college.avg_rating,
+  total_reviews: college.total_reviews
+})
 
 export default function Home() {
-  const [colleges, setColleges] = useState<College[]>(mockColleges)
-  const [filteredColleges, setFilteredColleges] = useState<College[]>(mockColleges)
+  const [allColleges] = useState(colleges.map(convertCollegeFormat))
+  const [filteredColleges, setFilteredColleges] = useState(colleges.map(convertCollegeFormat).slice(0, 6))
   const [selectedCollege, setSelectedCollege] = useState<College | null>(null)
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const handleCollegeSelect = (college: College) => {
+  const handleCollegeSelect = (college: any) => {
     setSelectedCollege(college)
     // In a real app, this would navigate to college detail page
     console.log('Selected college:', college)
@@ -145,7 +83,7 @@ export default function Home() {
           
           <div className="max-w-4xl mx-auto mb-12">
             <SearchBar 
-              colleges={colleges} 
+              colleges={allColleges} 
               onCollegeSelect={handleCollegeSelect}
             />
           </div>
@@ -154,7 +92,7 @@ export default function Home() {
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <stat.icon className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-2xl font-bold">{stat.value.replace('2,500+', `${colleges.length.toLocaleString()}+`)}</div>
                 <div className="text-blue-200 text-sm">{stat.label}</div>
               </div>
             ))}
@@ -229,7 +167,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredColleges.slice(0, 6).map((college) => (
+            {filteredColleges.map((college) => (
               <CollegeCard
                 key={college.id}
                 college={college}
