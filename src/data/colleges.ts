@@ -879,7 +879,7 @@ export const colleges: College[] = [
     streams: ['Engineering', 'Technology'],
     website: 'https://iitgoa.ac.in',
     established: 2016,
-    accrediation: { naac_grade: 'A', nirf_rank: 65 },
+    accreditation: { naac_grade: 'A', nirf_rank: 65 },
     affiliation: ['MHRD'],
     contact: { email: 'info@iitgoa.ac.in', phone: '+91-832-249-0000' },
     avg_rating: 3.8,
@@ -951,7 +951,7 @@ export const colleges: College[] = [
     avg_rating: 3.9,
     total_reviews: 198,
     description: 'Leading NIT in Central India.',
-    jhostel: true,
+    hostel: true,
     fees: { course: 'B.Tech', amount: '₹1.8 Lakhs/year' },
     placement_rate: '85%',
     coordinates: { lat: 21.2514, lng: 81.6296 }

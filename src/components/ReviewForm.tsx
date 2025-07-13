@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Star, Send, User, UserCheck } from 'lucide-react'
+import { Star, Send, User, UserCheck, Shield, Sparkles, X, CheckCircle, AlertCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
@@ -9,8 +9,6 @@ import { StarRating } from './StarRating'
 import { getUserUUID } from '@/lib/uuid-manager'
 
 interface ReviewFormProps {
-  collegeId: string
-  collegeName: string
   onSubmit: (review: ReviewData) => void
   onClose: () => void
 }
@@ -26,7 +24,7 @@ interface ReviewData {
   is_verified: boolean
 }
 
-export function ReviewForm({ collegeId, collegeName, onSubmit, onClose }: ReviewFormProps) {
+export function ReviewForm({ onSubmit, onClose }: ReviewFormProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [email, setEmail] = useState('')
   const [ratings, setRatings] = useState({
@@ -37,6 +35,7 @@ export function ReviewForm({ collegeId, collegeName, onSubmit, onClose }: Review
   })
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [currentStep, setCurrentStep] = useState(1)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,67 +70,106 @@ export function ReviewForm({ collegeId, collegeName, onSubmit, onClose }: Review
     }
   }
 
+  const getRatingColor = (rating: number) => {
+    if (rating >= 4.5) return 'text-[var(--secondary)]'
+    if (rating >= 4.0) return 'text-[var(--primary)]'
+    if (rating >= 3.5) return 'text-yellow-600'
+    return 'text-[var(--gray)]'
+  }
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Review {collegeName}</span>
-            <Button variant="ghost" onClick={onClose} className="p-2">
-              ×
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Authentication Toggle */}
-            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-              <Button
-                type="button"
-                variant={!isLoggedIn ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => setIsLoggedIn(false)}
-                className="flex items-center gap-2"
-              >
-                <User className="w-4 h-4" />
-                Anonymous
-              </Button>
-              <Button
-                type="button"
-                variant={isLoggedIn ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => setIsLoggedIn(true)}
-                className="flex items-center gap-2"
-              >
-                <UserCheck className="w-4 h-4" />
-                Login (Get Verified Badge)
-              </Button>
-            </div>
+    <div className="relative">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-[var(--primary)] mb-2">Share Your Experience</h2>
+          <p className="text-[var(--gray)]">Help other students make informed decisions</p>
+        </div>
+        <Button
+          variant="ghost"
+          onClick={onClose}
+          className="p-2 hover:bg-[var(--muted)] rounded-xl"
+        >
+          <X className="w-6 h-6" />
+        </Button>
+      </div>
 
-            {isLoggedIn && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your.email@college.ac.in"
-                  required
-                />
-                {email.includes('.ac.in') && (
-                  <p className="text-sm text-green-600 mt-1">
-                    ✓ You'll get a verified badge for using college email
-                  </p>
-                )}
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Authentication Toggle */}
+        <div className="bg-gradient-to-r from-[var(--accent)] to-[var(--muted)] p-6 rounded-2xl border border-[var(--secondary)]">
+          <div className="flex items-center gap-3 mb-4">
+            <Shield className="w-6 h-6 text-[var(--secondary)]" />
+            <h3 className="font-bold text-[var(--primary)]">Choose Your Review Type</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button
+              type="button"
+              variant={!isLoggedIn ? 'primary' : 'outline'}
+              onClick={() => setIsLoggedIn(false)}
+              className="h-auto p-4 flex flex-col items-center gap-3"
+            >
+              <User className="w-6 h-6" />
+              <div className="text-left">
+                <div className="font-bold">Anonymous Review</div>
+                <div className="text-sm opacity-80">Share freely without revealing identity</div>
               </div>
-            )}
+            </Button>
+            
+            <Button
+              type="button"
+              variant={isLoggedIn ? 'primary' : 'outline'}
+              onClick={() => setIsLoggedIn(true)}
+              className="h-auto p-4 flex flex-col items-center gap-3"
+            >
+              <UserCheck className="w-6 h-6" />
+              <div className="text-left">
+                <div className="font-bold">Verified Review</div>
+                <div className="text-sm opacity-80">Get verified badge with college email</div>
+              </div>
+            </Button>
+          </div>
+        </div>
 
-            {/* Rating Categories */}
-            <div className="space-y-4">
+        {isLoggedIn && (
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl border border-green-100">
+            <div className="flex items-center gap-3 mb-4">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+              <h3 className="font-bold text-[var(--primary)]">Verified Review Setup</h3>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-bold text-[var(--primary)] mb-3">
+                College Email Address
+              </label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your.email@college.ac.in"
+                className="mb-3"
+                required
+              />
+              {email.includes('.ac.in') && (
+                <div className="flex items-center gap-2 text-green-600">
+                  <CheckCircle className="w-4 h-4" />
+                  <span className="text-sm font-medium">You'll get a verified badge!</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Rating Categories */}
+        <div className="space-y-6">
+          <div className="bg-white p-6 rounded-2xl border border-[var(--secondary)] shadow-sm">
+            <h3 className="font-bold text-[var(--primary)] mb-4 flex items-center gap-2">
+              <Star className="w-5 h-5 text-[var(--secondary)]" />
+              Rate Your Experience
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[var(--primary)] mb-3">
                   Overall Rating *
                 </label>
                 <StarRating
@@ -139,10 +177,17 @@ export function ReviewForm({ collegeId, collegeName, onSubmit, onClose }: Review
                   onRatingChange={(rating) => setRatings(prev => ({ ...prev, overall: rating }))}
                   size="lg"
                 />
+                {ratings.overall > 0 && (
+                  <div className={`mt-2 text-sm font-medium ${getRatingColor(ratings.overall)}`}>
+                    {ratings.overall >= 4.5 ? 'Excellent' : 
+                     ratings.overall >= 4.0 ? 'Very Good' : 
+                     ratings.overall >= 3.5 ? 'Good' : 'Average'}
+                  </div>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[var(--primary)] mb-3">
                   Faculty Quality *
                 </label>
                 <StarRating
@@ -152,7 +197,7 @@ export function ReviewForm({ collegeId, collegeName, onSubmit, onClose }: Review
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[var(--primary)] mb-3">
                   Infrastructure *
                 </label>
                 <StarRating
@@ -162,7 +207,7 @@ export function ReviewForm({ collegeId, collegeName, onSubmit, onClose }: Review
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[var(--primary)] mb-3">
                   Placement Support *
                 </label>
                 <StarRating
@@ -171,42 +216,61 @@ export function ReviewForm({ collegeId, collegeName, onSubmit, onClose }: Review
                 />
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Comment */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Review *
-              </label>
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Share your honest experience about this college..."
-                className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                required
-                minLength={10}
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                {comment.length}/500 characters (minimum 10)
-              </p>
+        {/* Comment */}
+        <div className="bg-white p-6 rounded-2xl border border-[var(--secondary)] shadow-sm">
+          <label className="block text-sm font-bold text-[var(--primary)] mb-3">
+            Your Detailed Review *
+          </label>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Share your honest experience about this college. What did you like? What could be improved? Help other students make informed decisions..."
+            className="w-full h-32 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] resize-none transition-all duration-200"
+            required
+            minLength={10}
+            maxLength={500}
+          />
+          <div className="flex items-center justify-between mt-3">
+            <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
+              <AlertCircle className="w-4 h-4" />
+              <span>Minimum 10 characters required</span>
             </div>
+            <div className={`text-sm font-medium ${comment.length >= 10 ? 'text-green-600' : 'text-[var(--gray)]'}`}>
+              {comment.length}/500
+            </div>
+          </div>
+        </div>
 
-            {/* Submit Button */}
-            <div className="flex items-center justify-between pt-4">
-              <p className="text-sm text-gray-600">
-                You can review each college once per week
-              </p>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex items-center gap-2"
-              >
-                <Send className="w-4 h-4" />
-                {isSubmitting ? 'Submitting...' : 'Submit Review'}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+        {/* Submit Button */}
+        <div className="flex items-center justify-between pt-6 border-t border-[var(--secondary)]">
+          <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
+            <Shield className="w-4 h-4" />
+            <span>Your review will be anonymous and safe</span>
+          </div>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            variant="gradient"
+            size="lg"
+            className="flex items-center gap-2"
+          >
+            {isSubmitting ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Send className="w-5 h-5" />
+                Submit Review
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
     </div>
   )
 }

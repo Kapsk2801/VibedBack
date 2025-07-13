@@ -71,26 +71,7 @@ export default function CollegePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Star className="w-5 h-5 text-white" />
-              </div>
-              <a href="/" className="text-xl font-bold text-gray-900">VibedBack</a>
-            </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="/browse" className="text-gray-600 hover:text-gray-900">Browse Colleges</a>
-              <a href="/about" className="text-gray-600 hover:text-gray-900">About</a>
-              <Button size="sm" onClick={() => setShowReviewForm(true)}>Submit Review</Button>
-            </nav>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-[var(--background)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* College Header */}
         <div className="bg-white rounded-xl shadow-sm p-8 mb-8">
@@ -237,8 +218,6 @@ export default function CollegePage() {
       {/* Review Form Modal */}
       {showReviewForm && (
         <ReviewForm
-          collegeId={college.id}
-          collegeName={college.name}
           onSubmit={handleReviewSubmit}
           onClose={() => setShowReviewForm(false)}
         />

@@ -6,7 +6,7 @@ const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     <div
       ref={ref}
       className={clsx(
-        'rounded-xl border border-gray-200 bg-white shadow-sm',
+        'rounded-2xl border border-gray-100 bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1',
         className
       )}
       {...props}
@@ -30,7 +30,7 @@ const CardTitle = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLHeadingEle
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={clsx('font-semibold leading-none tracking-tight', className)}
+      className={clsx('font-bold leading-none tracking-tight text-gray-900', className)}
       {...props}
     />
   )
